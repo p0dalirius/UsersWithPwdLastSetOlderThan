@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 	"strconv"
+	"strings"
 
 	"github.com/go-ldap/ldap/v3"
 	"github.com/xuri/excelize/v2"
