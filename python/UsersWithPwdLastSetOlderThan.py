@@ -405,7 +405,6 @@ if __name__ == '__main__':
         if pwdLastSet == "Never":
             pwdLastSet = "01/01/1601, 00:00:00"
         pwdLastSet_date = datetime.datetime.strptime(pwdLastSet, "%m/%d/%Y, %H:%M:%S")
-        
         delta = datetime.datetime.now() - pwdLastSet_date
         if delta.days >= args.days:
             if not args.quiet:

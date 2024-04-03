@@ -13,7 +13,7 @@ import (
 )
 
 func banner() {
-	fmt.Printf("DomainUsersToXLSX v%s - by @podalirius_\n", "1.3")
+	fmt.Printf("UsersWithPwdLastSetOlderThan v%s - by @podalirius_\n", "1.3")
 	fmt.Println("")
 }
 
@@ -81,84 +81,6 @@ func ldap_get_rootdse(ldapSession *ldap.Conn) *ldap.Entry {
 	return searchResult.Entries[0]
 }
 
-func getDomainFromDistinguishedName(distinguishedName string) string {
-	domain := ""
-	if strings.Contains(strings.ToLower(distinguishedName), "dc=") {
-		dnParts := strings.Split(strings.ToLower(distinguishedName), ",")
-		for _, part := range dnParts {
-			if strings.HasPrefix(part, "dc=") {
-				dcValue := strings.SplitN(part, "=", 2)[1]
-				if domain == "" {
-					domain = dcValue
-				} else {
-					domain = domain + "." + dcValue
-				}
-			}
-		}
-	}
-	return domain
-}
-
-func getOUPathFromDistinguishedName(distinguishedName string) string {
-	ouPath := ""
-	if strings.Contains(strings.ToLower(distinguishedName), "ou=") {
-		dnParts := strings.Split(strings.ToLower(distinguishedName), ",")
-		// Reverse dnParts slice
-		for i, j := 0, len(dnParts)-1; i < j; i, j = i+1, j-1 {
-			dnParts[i], dnParts[j] = dnParts[j], dnParts[i]
-		}
-
-		// Skip domain
-		for len(dnParts) > 0 && strings.HasPrefix(dnParts[0], "dc=") {
-			dnParts = dnParts[1:]
-		}
-
-		for len(dnParts) > 0 && strings.HasPrefix(dnParts[0], "ou=") {
-			ouValue := strings.SplitN(dnParts[0], "=", 2)[1]
-			if ouPath == "" {
-				ouPath = ouValue
-			} else {
-				ouPath = ouPath + " --> " + ouValue
-			}
-			dnParts = dnParts[1:]
-		}
-	}
-	return ouPath
-}
-
-func parseFVE(distinguishedName string, ldapEntry *ldap.Entry) map[string]string {
-	entry := make(map[string]string)
-	entry["distinguishedName"] = distinguishedName
-	entry["domain"] = getDomainFromDistinguishedName(distinguishedName)
-	entry["organizationalUnits"] = getOUPathFromDistinguishedName(distinguishedName)
-	entry["createdAt"] = ""
-	entry["volumeGuid"] = ""
-
-	// Parse CN of key
-	re := regexp.MustCompile(`^(CN=)([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}-[0-9]{2}:[0-9]{2})({[0-9A-F\-]+}),`)
-	matched := re.FindStringSubmatch(distinguishedName)
-	if matched != nil {
-		createdAt, guid := matched[2], matched[3]
-		entry["createdAt"] = createdAt
-		entry["volumeGuid"] = strings.Trim(guid, "{}")
-	}
-
-	// Parse computer name
-	entry["computerName"] = ""
-	if strings.Contains(distinguishedName, ",") {
-		splitDN := strings.Split(distinguishedName, ",")
-		if strings.ToUpper(splitDN[1][:3]) == "CN=" {
-			entry["computerName"] = strings.SplitN(splitDN[1], "=", 2)[1]
-		}
-	}
-
-	// Add recovery key
-	entry["recoveryKey"] = ldapEntry.GetAttributeValue("msFVE-RecoveryPassword")
-
-	return entry
-}
-
-
 var (
 	useLdaps     bool
 	quiet        bool
@@ -173,12 +95,15 @@ var (
 	// authKey        string
 	// useKerberos    bool
 	xlsx         string
+	days         int
 )
 
 func parseArgs() {
 	flag.BoolVar(&useLdaps, "use-ldaps", false, "Use LDAPS instead of LDAP.")
 	flag.BoolVar(&quiet, "quiet", false, "Show no information at all.")
 	flag.BoolVar(&debug, "debug", false, "Debug mode")
+
+	flag.IntVar(&days, "days", 365, "Number of days since last password change.")
 
 	flag.StringVar(&ldapHost, "host", "", "IP Address of the domain controller or KDC (Key Distribution Center) for Kerberos. If omitted it will use the domain part (FQDN) specified in the identity parameter.")
 	flag.IntVar(&ldapPort, "port", 0, "Port number to connect to LDAP server.")
@@ -282,11 +207,18 @@ func main() {
 	// Print search results
 	var resultsList []map[string]string
 	for _, entry := range searchResult.Entries {
-		result := parseFVE(entry.GetAttributeValue("distinguishedName"), entry)
-		resultsList = append(resultsList, result)
+		pwdLastSet := entry.GetAttributeValue("pwdLastSet")
+		pwdLastSetTime, err := time.Parse("01/02/2006, 15:04:05", pwdLastSet)
+		if err != nil {
+			fmt.Println("[!] Error parsing pwdLastSet:", err)
+			continue
+		}
+		daysSincePwdLastSet := time.Since(pwdLastSetTime).Hours() / 24
+		if daysSincePwdLastSet >= float64(days) {
+			resultsList = append(resultsList, result)
+		}
 	}
-	fmt.Printf("[+] Total BitLocker recovery keys found: %d\n", len(resultsList))
-	
+
 	// Export BitLocker Recovery Keys to an Excel
 	if xlsx != "" {
 		f := excelize.NewFile()
@@ -307,11 +239,11 @@ func main() {
 		if err := f.SaveAs(xlsx); err != nil {
 			fmt.Println(err)
 		}
-		fmt.Printf("[+] Exported BitLocker recovery keys to: %s\n", xlsx)
+		fmt.Printf("[+] Written %d users with pwdLastSet older than %d days to %s\n", i, days, xlsx)
 	} else {
 		// Print the keys in the console
 		for _, result := range resultsList {
-			fmt.Printf("| %-20s | %-20s | %s |\n", result["domain"], result["computerName"], result["recoveryKey"])
+			fmt.Printf("   [>] (pwdLastSet=%s) for %s ...\n", pwdLastSet, entry.GetAttributeValue("distinguishedName"))
 		}
 	}
 
