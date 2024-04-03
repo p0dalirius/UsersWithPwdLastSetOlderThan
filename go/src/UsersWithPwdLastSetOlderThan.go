@@ -214,6 +214,22 @@ func main() {
 		}
 		daysSincePwdLastSet := time.Since(pwdLastSetTime).Hours() / 24
 		if daysSincePwdLastSet >= float64(days) {
+			result := make(map[string]string)
+
+			result["name"] = entry.GetAttributeValue("name")
+			result["sAMAccountName"] = entry.GetAttributeValue("sAMAccountName")
+			result["distinguishedName"] = entry.GetAttributeValue("distinguishedName")
+			result["description"] = entry.GetAttributeValue("description")
+			result["memberOf"] = entry.GetAttributeValue("memberOf")
+			result["pwdLastSet"] = entry.GetAttributeValue("pwdLastSet")
+			result["whenCreated"] = entry.GetAttributeValue("whenCreated")
+			result["lastLogon"] = entry.GetAttributeValue("lastLogon")
+			result["logonCount"] = entry.GetAttributeValue("logonCount")
+			result["lastLogonTimestamp"] = entry.GetAttributeValue("lastLogonTimestamp")
+			result["lastLogoff"] = entry.GetAttributeValue("lastLogoff")
+			result["adminCount"] = entry.GetAttributeValue("adminCount")
+			result["accountExpires"] = entry.GetAttributeValue("accountExpires")
+
 			resultsList = append(resultsList, result)
 		}
 	}
@@ -242,7 +258,7 @@ func main() {
 	} else {
 		// Print the keys in the console
 		for _, result := range resultsList {
-			fmt.Printf("   [>] (pwdLastSet=%s) for %s ...\n", pwdLastSet, entry.GetAttributeValue("distinguishedName"))
+			fmt.Printf("   [>] (pwdLastSet=%s) for %s ...\n", result["pwdLastSet"], entry.GetAttributeValue("distinguishedName"))
 		}
 	}
 
