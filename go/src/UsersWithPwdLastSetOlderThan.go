@@ -244,13 +244,34 @@ func main() {
 			return
 		}
 		// Set value of a cell.
-		f.SetCellValue("Sheet1", "A1", "Domain")
-		f.SetCellValue("Sheet1", "B1", "Computer Name")
-		f.SetCellValue("Sheet1", "C1", "BitLocker Recovery Key")
+		f.SetCellValue("Sheet1", "A1", "name")
+		f.SetCellValue("Sheet1", "B1", "sAMAccountName")
+		f.SetCellValue("Sheet1", "C1", "distinguishedName")
+		f.SetCellValue("Sheet1", "D1", "description")
+		f.SetCellValue("Sheet1", "E1", "memberOf")
+		f.SetCellValue("Sheet1", "F1", "pwdLastSet")
+		f.SetCellValue("Sheet1", "G1", "whenCreated")
+		f.SetCellValue("Sheet1", "H1", "lastLogon")
+		f.SetCellValue("Sheet1", "I1", "logonCount")
+		f.SetCellValue("Sheet1", "J1", "lastLogonTimestamp")
+		f.SetCellValue("Sheet1", "K1", "lastLogoff")
+		f.SetCellValue("Sheet1", "L1", "adminCount")
+		f.SetCellValue("Sheet1", "M1", "accountExpires")
+
 		for i, result := range resultsList {
-			f.SetCellValue("Sheet1", fmt.Sprintf("A%d", i+2), result["domain"])
-			f.SetCellValue("Sheet1", fmt.Sprintf("B%d", i+2), result["computerName"])
-			f.SetCellValue("Sheet1", fmt.Sprintf("C%d", i+2), result["recoveryKey"])
+			f.SetCellValue("Sheet1", fmt.Sprintf("A%d", i+2), result["name"])
+			f.SetCellValue("Sheet1", fmt.Sprintf("B%d", i+2), result["sAMAccountName"])
+			f.SetCellValue("Sheet1", fmt.Sprintf("C%d", i+2), result["distinguishedName"])
+			f.SetCellValue("Sheet1", fmt.Sprintf("D%d", i+2), result["description"])
+			f.SetCellValue("Sheet1", fmt.Sprintf("E%d", i+2), result["memberOf"])
+			f.SetCellValue("Sheet1", fmt.Sprintf("F%d", i+2), result["pwdLastSet"])
+			f.SetCellValue("Sheet1", fmt.Sprintf("G%d", i+2), result["whenCreated"])
+			f.SetCellValue("Sheet1", fmt.Sprintf("H%d", i+2), result["lastLogon"])
+			f.SetCellValue("Sheet1", fmt.Sprintf("I%d", i+2), result["logonCount"])
+			f.SetCellValue("Sheet1", fmt.Sprintf("J%d", i+2), result["lastLogonTimestamp"])
+			f.SetCellValue("Sheet1", fmt.Sprintf("K%d", i+2), result["lastLogoff"])
+			f.SetCellValue("Sheet1", fmt.Sprintf("L%d", i+2), result["adminCount"])
+			f.SetCellValue("Sheet1", fmt.Sprintf("M%d", i+2), result["accountExpires"])
 		}
 		// Set active sheet of the workbook.
 		f.SetActiveSheet(index)
