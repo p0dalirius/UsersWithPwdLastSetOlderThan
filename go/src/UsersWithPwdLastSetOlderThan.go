@@ -197,7 +197,7 @@ func main() {
 
 	// Perform LDAP search
 	fmt.Println("[+] Extracting all users ... ")
-	searchResult, err := ldapSession.Search(searchRequest)
+	searchResult, err := ldapSession.SearchWithPaging(searchRequest, 1000)
 	if err != nil {
 		fmt.Println("[!] Error searching LDAP:", err)
 		return
@@ -206,13 +206,12 @@ func main() {
 	// Print search results
 	var resultsList []map[string]string
 	for _, entry := range searchResult.Entries {
+
 		pwdLastSet := entry.GetAttributeValue("pwdLastSet")
-		pwdLastSetTime, err := time.Parse("01/02/2006, 15:04:05", pwdLastSet)
-		if err != nil {
-			fmt.Println("[!] Error parsing pwdLastSet:", err)
-			continue
-		}
+		unixTimestampStart := 116444736000000000 // Monday, January 1, 1601 12:00:00 AM
+		pwdLastSetTime := time.Unix(0, (pwdLastSet-unixTimestampStart)*100)
 		daysSincePwdLastSet := time.Since(pwdLastSetTime).Hours() / 24
+
 		if daysSincePwdLastSet >= float64(days) {
 			result := make(map[string]string)
 
