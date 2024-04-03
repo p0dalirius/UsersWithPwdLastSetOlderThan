@@ -24,7 +24,7 @@ def get_domain_users(ldap_server, ldap_session, attrs=["*"]):
     ts_never_high = datetime.datetime(9999, 12, 31, 23, 59, 59, 999999, tzinfo=datetime.timezone.utc)
     results = {}
     target_dn = ldap_server.info.other["defaultNamingContext"]
-    ldap_session.search(target_dn, "(objectCategory=person)", attributes=attrs)
+    ldap_session.search(target_dn, "(&(objectCategory=person)(pwdLastSet=*))", attributes=attrs)
     for entry in ldap_session.response:
         if entry['type'] != 'searchResEntry':
             continue
@@ -409,7 +409,12 @@ if __name__ == '__main__':
         if delta.days >= args.days:
             if not args.quiet:
                 print("   [>] (pwdLastSet=%s) for %s ..." % (pwdLastSet, dn))
-            data = [user.get(f, "") for f in interesting_attributes]
+            data = []
+            for f in interesting_attributes:
+                value = user.get(f, "")
+                if type(value) == list:
+                    value = '\n'.join([v for v in value])
+                data.append(value)
             worksheet.write_row(row_id, 0, data)
             row_id += 1
     worksheet.autofilter(0, 0, row_id, len(interesting_attributes) - 1)

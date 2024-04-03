@@ -180,7 +180,7 @@ func main() {
 		// TypesOnly
 		false,
 		// Search filter
-		"(objectClass=person)",
+		"(&(objectClass=person)(pwdLastSet=*))",
 		// Attributes to retrieve
 		[]string{
 			"name",
@@ -216,7 +216,7 @@ func main() {
 		pwdLastSet := entry.GetAttributeValue("pwdLastSet")
 		pwdLastSetInt, err := strconv.ParseInt(pwdLastSet, 10, 64)
 		if err != nil {
-			fmt.Println("[!] Error converting pwdLastSet to float64:", err)
+			fmt.Printf("[!] %s Error converting pwdLastSet to float64: %s\n", entry.GetAttributeValue("distinguishedName"), err)
 			continue
 		}
 		const unixTimestampStart int64 = 116444736000000000 // Monday, January 1, 1601 12:00:00 AM
