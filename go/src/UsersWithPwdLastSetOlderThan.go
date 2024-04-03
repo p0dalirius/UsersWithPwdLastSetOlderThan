@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"time"
+	"strconv"
 
 	"github.com/go-ldap/ldap/v3"
 	"github.com/xuri/excelize/v2"
@@ -206,10 +207,15 @@ func main() {
 	// Print search results
 	var resultsList []map[string]string
 	for _, entry := range searchResult.Entries {
-
+	
 		pwdLastSet := entry.GetAttributeValue("pwdLastSet")
-		unixTimestampStart := 116444736000000000 // Monday, January 1, 1601 12:00:00 AM
-		pwdLastSetTime := time.Unix(0, (pwdLastSet-unixTimestampStart)*100)
+		pwdLastSetFloat, err := strconv.ParseFloat(pwdLastSet, 64)
+		if err != nil {
+			fmt.Println("[!] Error converting pwdLastSet to float64:", err)
+			continue
+		}
+		const unixTimestampStart float64 = 116444736000000000 // Monday, January 1, 1601 12:00:00 AM
+		pwdLastSetTime := time.Unix(0, (pwdLastSetFloat-unixTimestampStart)*100)
 		daysSincePwdLastSet := time.Since(pwdLastSetTime).Hours() / 24
 
 		if daysSincePwdLastSet >= float64(days) {
