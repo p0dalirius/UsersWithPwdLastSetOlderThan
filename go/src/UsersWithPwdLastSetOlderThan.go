@@ -209,13 +209,13 @@ func main() {
 	for _, entry := range searchResult.Entries {
 	
 		pwdLastSet := entry.GetAttributeValue("pwdLastSet")
-		pwdLastSetFloat, err := strconv.ParseFloat(pwdLastSet, 64)
+		pwdLastSetInt, err := strconv.ParseInt(pwdLastSet, 10, 64)
 		if err != nil {
 			fmt.Println("[!] Error converting pwdLastSet to float64:", err)
 			continue
 		}
-		const unixTimestampStart float64 = 116444736000000000 // Monday, January 1, 1601 12:00:00 AM
-		pwdLastSetTime := time.Unix(0, int64((pwdLastSetFloat-unixTimestampStart)*100))
+		const unixTimestampStart int64 = 116444736000000000 // Monday, January 1, 1601 12:00:00 AM
+		pwdLastSetTime := time.Unix(0, int64((pwdLastSetInt-unixTimestampStart)*100))
 		daysSincePwdLastSet := time.Since(pwdLastSetTime).Hours() / 24
 
 		if daysSincePwdLastSet >= float64(days) {
