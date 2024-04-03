@@ -190,7 +190,7 @@ func main() {
 			"lastLogonTimestamp",
 			"lastLogoff",
 			"adminCount",
-			"accountExpires"
+			"accountExpires",
 		},
 		// Controls
 		nil,
