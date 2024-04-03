@@ -239,6 +239,10 @@ func main() {
 		f := excelize.NewFile()
 		// Create a new sheet.
 		index, err := f.NewSheet("Sheet1")
+		if err != nil {
+			fmt.Println("[!] Error creating sheet:", err)
+			return
+		}
 		// Set value of a cell.
 		f.SetCellValue("Sheet1", "A1", "Domain")
 		f.SetCellValue("Sheet1", "B1", "Computer Name")
@@ -254,11 +258,12 @@ func main() {
 		if err := f.SaveAs(xlsx); err != nil {
 			fmt.Println(err)
 		}
-		fmt.Printf("[+] Written %d users with pwdLastSet older than %d days to %s\n", i, days, xlsx)
+		fmt.Printf("[+] Written %d users with pwdLastSet older than %d days to %s\n", len(resultsList), days, xlsx)
+		
 	} else {
 		// Print the keys in the console
 		for _, result := range resultsList {
-			fmt.Printf("   [>] (pwdLastSet=%s) for %s ...\n", result["pwdLastSet"], entry.GetAttributeValue("distinguishedName"))
+			fmt.Printf("   [>] (pwdLastSet=%s) for %s ...\n", result["pwdLastSet"], result["distinguishedName"])
 		}
 	}
 
