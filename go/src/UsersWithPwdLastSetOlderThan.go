@@ -5,8 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"regexp"
-	"strings"
+	"time"
 
 	"github.com/go-ldap/ldap/v3"
 	"github.com/xuri/excelize/v2"
