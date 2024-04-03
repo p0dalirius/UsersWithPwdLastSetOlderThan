@@ -139,6 +139,10 @@ func main() {
 	banner()
 	parseArgs()
 
+	if xlsx == "" {
+		xlsx = fmt.Sprintf("UsersWithPwdLastSetOlderThan_%d_days_%s.xlsx", days, strings.ToLower(authDomain))
+	}
+
 	if debug {
 		if !useLdaps {
 			fmt.Printf("[debug] Connecting to remote ldap://%s:%d ...\n", ldapHost, ldapPort)
