@@ -18,16 +18,16 @@ RUN echo '#!/bin/bash' > /entrypoint.sh \
     && echo 'echo "[+] Building"' >> /entrypoint.sh \
     && echo 'echo " ├──[>] Building for linux i386"' >> /entrypoint.sh \
     && echo 'mkdir -p /workspace/bin/linux/x86/' >> /entrypoint.sh >> /entrypoint.sh \
-    && echo 'GOOS=linux GOARCH=386 /usr/local/go/bin/go build -o /workspace/bin/linux/x86/ ExtractBitlockerKeys.go' >> /entrypoint.sh \
+    && echo 'GOOS=linux GOARCH=386 /usr/local/go/bin/go build -o /workspace/bin/linux/x86/ UsersWithPwdLastSetOlderThan.go' >> /entrypoint.sh \
     && echo 'echo " ├──[>] Building for linux amd64"' >> /entrypoint.sh \
     && echo 'mkdir -p /workspace/bin/linux/x64/' >> /entrypoint.sh >> /entrypoint.sh \
-    && echo 'GOOS=linux GOARCH=amd64 /usr/local/go/bin/go build -o /workspace/bin/linux/x64/ ExtractBitlockerKeys.go' >> /entrypoint.sh \
+    && echo 'GOOS=linux GOARCH=amd64 /usr/local/go/bin/go build -o /workspace/bin/linux/x64/ UsersWithPwdLastSetOlderThan.go' >> /entrypoint.sh \
     && echo 'echo " ├──[>] Building for Windows i386"' >> /entrypoint.sh \
     && echo 'mkdir -p /workspace/bin/windows/x86/' >> /entrypoint.sh >> /entrypoint.sh \
-    && echo 'GOOS=windows GOARCH=386 /usr/local/go/bin/go build -o /workspace/bin/windows/x86/ ExtractBitlockerKeys.go' >> /entrypoint.sh \
+    && echo 'GOOS=windows GOARCH=386 /usr/local/go/bin/go build -o /workspace/bin/windows/x86/ UsersWithPwdLastSetOlderThan.go' >> /entrypoint.sh \
     && echo 'echo " └──[>] Building for Windows amd64"' >> /entrypoint.sh \
     && echo 'mkdir -p /workspace/bin/windows/x64/' >> /entrypoint.sh >> /entrypoint.sh \
-    && echo 'GOOS=windows GOARCH=amd64 /usr/local/go/bin/go build -o /workspace/bin/windows/x64/ ExtractBitlockerKeys.go' >> /entrypoint.sh \
+    && echo 'GOOS=windows GOARCH=amd64 /usr/local/go/bin/go build -o /workspace/bin/windows/x64/ UsersWithPwdLastSetOlderThan.go' >> /entrypoint.sh \
     && chmod +x /entrypoint.sh
 
 # Prepare workspace volume
