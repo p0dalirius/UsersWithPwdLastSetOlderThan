@@ -215,7 +215,7 @@ func main() {
 			continue
 		}
 		const unixTimestampStart float64 = 116444736000000000 // Monday, January 1, 1601 12:00:00 AM
-		pwdLastSetTime := time.Unix(0, (pwdLastSetFloat-unixTimestampStart)*100)
+		pwdLastSetTime := time.Unix(0, int64((pwdLastSetFloat-unixTimestampStart)*100))
 		daysSincePwdLastSet := time.Since(pwdLastSetTime).Hours() / 24
 
 		if daysSincePwdLastSet >= float64(days) {
