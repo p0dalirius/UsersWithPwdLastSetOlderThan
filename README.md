@@ -3,7 +3,7 @@
 <p align="center">
   Extract all users from an Active Directory domain with password last set older than X days to an Excel worksheet. 
   <br>
-  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/p0dalirius/DomainUsersToXLSX">
+  <img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/p0dalirius/UsersWithPwdLastSetOlderThan">
   <a href="https://twitter.com/intent/follow?screen_name=podalirius_" title="Follow"><img src="https://img.shields.io/twitter/follow/podalirius_?label=Podalirius&style=social"></a>
   <br>
 </p>
