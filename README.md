@@ -17,7 +17,7 @@
 
 ```
 $ ./UsersWithPwdLastSetOlderThan.py -h                                                      
-UsersWithPwdLastSetOlderThan v1.2 - by @podalirius_
+UsersWithPwdLastSetOlderThan v1.2 - by Remi GASCOU (Podalirius)
 
 usage: e.py [-h] [--use-ldaps] [-q] [-debug] [-no-colors] [-o OUTPUT_FILE] [-D DAYS] --dc-ip ip address [-d DOMAIN] [-u USER]
             [--no-pass | -p PASSWORD | -H [LMHASH:]NTHASH | --aes-key hex key] [-k]

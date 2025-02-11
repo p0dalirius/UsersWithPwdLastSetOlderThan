@@ -14,7 +14,7 @@ import (
 )
 
 func banner() {
-	fmt.Printf("UsersWithPwdLastSetOlderThan v%s - by @podalirius_\n", "1.3")
+	fmt.Printf("UsersWithPwdLastSetOlderThan v%s - by Remi GASCOU (Podalirius)\n", "1.3")
 	fmt.Println("")
 }
 

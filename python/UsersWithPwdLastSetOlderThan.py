@@ -55,7 +55,7 @@ def get_domain_users(ldap_server, ldap_session, attrs=["*"]):
 
 
 def parseArgs():
-    print("UsersWithPwdLastSetOlderThan v1.2 - by @podalirius_\n")
+    print("UsersWithPwdLastSetOlderThan v1.2 - by Remi GASCOU (Podalirius)\n")
 
     parser = argparse.ArgumentParser(add_help=True, description="Extract all users from an Active Directory domain to an Excel worksheet.")
     
